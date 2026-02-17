@@ -25,8 +25,10 @@ fail for tests that use helpers.
 1. Create `lua/testpilot/languages/<lang>.lua`
 2. Export `candidates(path, filename)` → returns list of candidate test file
    paths
-3. Add extension mapping in `lua/testpilot/resolver.lua` (`extension_map`)
-4. Add tests in `tests/testpilot/resolver_spec.lua`
+3. Optionally export `test_function_name(func_name)` and
+   `test_function_pattern(func_name)` for function-level navigation
+4. Add extension mapping in `lua/testpilot/resolver.lua` (`extension_map`)
+5. Add tests in `tests/testpilot/resolver_spec.lua`
 
 ## jj Workflow
 
