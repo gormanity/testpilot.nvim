@@ -55,7 +55,7 @@ vim.keymap.set("n", "<leader>tf", testpilot.open_test_function, { desc = "Jump t
 
 ```lua
 {
-  open_method = "vsplit",  -- how to open test files: "vsplit", "split", "edit", "tabedit"
-  notify = true,           -- show notifications on success/failure
+  open_method = "vsplit",     -- how to open test files: "vsplit", "split", "edit", "tabedit"
+  notify = "failures",       -- "all", "failures", or "none"
 }
 ```

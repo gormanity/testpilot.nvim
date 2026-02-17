@@ -5,6 +5,17 @@ local treesitter = require("testpilot.treesitter")
 
 local M = {}
 
+local function should_notify(level)
+  local notify = config.get().notify
+  if notify == "all" then
+    return true
+  elseif notify == "failures" then
+    return level == vim.log.levels.WARN
+  else
+    return false
+  end
+end
+
 function M.setup(opts)
   config.apply(opts)
 end
@@ -12,7 +23,7 @@ end
 function M.open_test_file(opts)
   local filepath = vim.fn.expand("%:p")
   if filepath == "" then
-    if config.get().notify then
+    if should_notify(vim.log.levels.WARN) then
       vim.notify("testpilot: no file in current buffer", vim.log.levels.WARN)
     end
     return false
@@ -20,7 +31,7 @@ function M.open_test_file(opts)
 
   local candidates, err = resolver.resolve(filepath)
   if not candidates then
-    if config.get().notify then
+    if should_notify(vim.log.levels.WARN) then
       vim.notify("testpilot: " .. err, vim.log.levels.WARN)
     end
     return false
@@ -33,7 +44,7 @@ end
 function M.open_test_function(opts)
   local filepath = vim.fn.expand("%:p")
   if filepath == "" then
-    if config.get().notify then
+    if should_notify(vim.log.levels.WARN) then
       vim.notify("testpilot: no file in current buffer", vim.log.levels.WARN)
     end
     return false
@@ -41,7 +52,7 @@ function M.open_test_function(opts)
 
   local func_name = treesitter.get_function_name()
   if not func_name then
-    if config.get().notify then
+    if should_notify(vim.log.levels.WARN) then
       vim.notify("testpilot: no function at cursor", vim.log.levels.WARN)
     end
     return false
@@ -49,7 +60,7 @@ function M.open_test_function(opts)
 
   local candidates, pattern, test_name, err = resolver.resolve_function(filepath, func_name)
   if not candidates then
-    if config.get().notify then
+    if should_notify(vim.log.levels.WARN) then
       vim.notify("testpilot: " .. err, vim.log.levels.WARN)
     end
     return false

@@ -12,6 +12,11 @@ your cursor.
 - Open tests in splits, tabs, or the current window
 - Supports Go, Python, TypeScript/JS, Rust, and Lua
 
+## Requirements
+
+- Neovim >= 0.9
+- A Treesitter parser for your language (only needed for `open_test_function`)
+
 ## Installation and Setup
 
 Install with your package manager, then call `setup()` and add keybindings.
@@ -44,8 +49,8 @@ to change:
 
 ```lua
 require("testpilot").setup({
-  open_method = "vsplit",  -- how to open the test file: "vsplit", "split", "edit", "tabedit"
-  notify = true,           -- show notifications on success/failure
+  open_method = "vsplit",     -- how to open the test file: "vsplit", "split", "edit", "tabedit"
+  notify = "failures",       -- "all", "failures", or "none"
 })
 ```
 

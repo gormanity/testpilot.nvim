@@ -2,6 +2,17 @@ local config = require("testpilot.config")
 
 local M = {}
 
+local function should_notify(level)
+  local notify = config.get().notify
+  if notify == "all" then
+    return true
+  elseif notify == "failures" then
+    return level == vim.log.levels.WARN
+  else
+    return false
+  end
+end
+
 local function file_contains_pattern(path, pattern)
   local lines = vim.fn.readfile(path)
   for _, line in ipairs(lines) do
@@ -33,7 +44,7 @@ function M.open(candidates, opts)
             if search_pattern then
               vim.fn.search(search_pattern)
             end
-            if cfg.notify then
+            if should_notify(vim.log.levels.INFO) then
               vim.notify("testpilot: focused " .. path, vim.log.levels.INFO)
             end
             return true, path
@@ -44,7 +55,7 @@ function M.open(candidates, opts)
         if search_pattern then
           vim.fn.search(search_pattern)
         end
-        if cfg.notify then
+        if should_notify(vim.log.levels.INFO) then
           vim.notify("testpilot: opened " .. path, vim.log.levels.INFO)
         end
         return true, path
@@ -52,7 +63,7 @@ function M.open(candidates, opts)
     end
   end
 
-  if cfg.notify then
+  if should_notify(vim.log.levels.WARN) then
     if search_pattern then
       local name = search_name or "test function"
       if found_test_file then

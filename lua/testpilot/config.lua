@@ -2,7 +2,7 @@ local M = {}
 
 local defaults = {
   open_method = "vsplit",
-  notify = true,
+  notify = "failures",
 }
 
 M._config = vim.deepcopy(defaults)

@@ -9,6 +9,7 @@ describe("testpilot.navigator", function()
 
   describe("open", function()
     it("opens first readable candidate with configured method", function()
+      config.apply({ notify = "all" })
       local restore_fr = sim.mock_filereadable({ ["/pkg/handler_test.go"] = true })
       local cmds, restore_cmd = sim.mock_vim_cmd()
       local msgs, restore_notify = sim.mock_notify()
@@ -92,6 +93,7 @@ describe("testpilot.navigator", function()
     end)
 
     it("focuses existing window instead of opening a duplicate", function()
+      config.apply({ notify = "all" })
       local restore_fr = sim.mock_filereadable({ ["/pkg/handler_test.go"] = true })
       local restore_bufnr = sim.mock_bufnr({ ["/pkg/handler_test.go"] = 42 })
       local restore_wfb = sim.mock_win_findbuf({ [42] = { 1001 } })
@@ -304,8 +306,40 @@ describe("testpilot.navigator", function()
       restore_notify()
     end)
 
-    it("suppresses notifications when notify is false", function()
-      config.apply({ notify = false })
+    it("suppresses success notifications with default notify = failures", function()
+      local restore_fr = sim.mock_filereadable({ ["/pkg/handler_test.go"] = true })
+      local cmds, restore_cmd = sim.mock_vim_cmd()
+      local msgs, restore_notify = sim.mock_notify()
+
+      navigator.open({ "/pkg/handler_test.go" })
+
+      assert.are.equal(1, #cmds)
+      assert.are.equal(0, #msgs)
+
+      restore_fr()
+      restore_cmd()
+      restore_notify()
+    end)
+
+    it("shows failure notifications with default notify = failures", function()
+      local restore_fr = sim.mock_filereadable({})
+      local cmds, restore_cmd = sim.mock_vim_cmd()
+      local msgs, restore_notify = sim.mock_notify()
+
+      local ok, _ = navigator.open({ "/pkg/handler_test.go" })
+
+      assert.is_false(ok)
+      assert.are.equal(0, #cmds)
+      assert.are.equal(1, #msgs)
+      assert.are.equal(vim.log.levels.WARN, msgs[1].level)
+
+      restore_fr()
+      restore_cmd()
+      restore_notify()
+    end)
+
+    it("suppresses all notifications when notify is none", function()
+      config.apply({ notify = "none" })
       local restore_fr = sim.mock_filereadable({ ["/pkg/handler_test.go"] = true })
       local cmds, restore_cmd = sim.mock_vim_cmd()
       local msgs, restore_notify = sim.mock_notify()
