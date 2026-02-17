@@ -2,6 +2,13 @@ local M = {}
 
 local extension_map = {
   go = "testpilot.languages.go",
+  py = "testpilot.languages.python",
+  ts = "testpilot.languages.typescript",
+  tsx = "testpilot.languages.typescript",
+  js = "testpilot.languages.typescript",
+  jsx = "testpilot.languages.typescript",
+  rs = "testpilot.languages.rust",
+  lua = "testpilot.languages.lua",
 }
 
 function M.resolve(filepath)
