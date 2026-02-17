@@ -1,0 +1,25 @@
+local go = require("testpilot.languages.go")
+
+describe("testpilot.languages.go", function()
+  describe("candidates", function()
+    it("returns _test.go candidate for a .go file", function()
+      local result = go.candidates("/project/pkg/", "handler.go")
+      assert.are.same({ "/project/pkg/handler_test.go" }, result)
+    end)
+
+    it("returns empty for non-.go file", function()
+      local result = go.candidates("/project/", "main.py")
+      assert.are.same({}, result)
+    end)
+
+    it("handles files already named _test.go", function()
+      local result = go.candidates("/project/", "handler_test.go")
+      assert.are.same({ "/project/handler_test_test.go" }, result)
+    end)
+
+    it("handles path with trailing slash", function()
+      local result = go.candidates("/a/b/c/", "server.go")
+      assert.are.same({ "/a/b/c/server_test.go" }, result)
+    end)
+  end)
+end)
