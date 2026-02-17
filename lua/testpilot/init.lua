@@ -47,7 +47,7 @@ function M.open_test_function(opts)
     return false
   end
 
-  local candidates, pattern, err = resolver.resolve_function(filepath, func_name)
+  local candidates, pattern, test_name, err = resolver.resolve_function(filepath, func_name)
   if not candidates then
     if config.get().notify then
       vim.notify("testpilot: " .. err, vim.log.levels.WARN)
@@ -57,6 +57,7 @@ function M.open_test_function(opts)
 
   opts = opts or {}
   opts.search_pattern = pattern
+  opts.search_name = test_name
   local ok, _ = navigator.open(candidates, opts)
   return ok
 end

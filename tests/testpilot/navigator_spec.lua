@@ -262,16 +262,40 @@ describe("testpilot.navigator", function()
       local cmds, restore_cmd = sim.mock_vim_cmd()
       local msgs, restore_notify = sim.mock_notify()
 
-      local ok, msg = navigator.open(
+      local ok, _ = navigator.open(
         { "/pkg/handler_test.go" },
-        { search_pattern = "^func TestNonexistent[(_]" }
+        { search_pattern = "^func TestNonexistent[(_]", search_name = "TestNonexistent" }
       )
 
       assert.is_false(ok)
-      assert.is_truthy(msg:find("test function not found"))
       assert.are.equal(0, #cmds)
       assert.are.equal(1, #msgs)
-      assert.is_truthy(msgs[1].msg:find("test function not found"))
+      assert.is_truthy(msgs[1].msg:find("TestNonexistent"))
+      assert.is_truthy(msgs[1].msg:find("not found in test file"))
+      assert.are.equal(vim.log.levels.WARN, msgs[1].level)
+
+      restore_fr()
+      restore_rf()
+      restore_cmd()
+      restore_notify()
+    end)
+
+    it("reports no test file when file is not readable and search_pattern given", function()
+      local restore_fr = sim.mock_filereadable({})
+      local restore_rf = sim.mock_readfile({})
+      local cmds, restore_cmd = sim.mock_vim_cmd()
+      local msgs, restore_notify = sim.mock_notify()
+
+      local ok, _ = navigator.open(
+        { "/pkg/handler_test.go" },
+        { search_pattern = "^func TestFoo[(_]", search_name = "TestFoo" }
+      )
+
+      assert.is_false(ok)
+      assert.are.equal(0, #cmds)
+      assert.are.equal(1, #msgs)
+      assert.is_truthy(msgs[1].msg:find("TestFoo"))
+      assert.is_truthy(msgs[1].msg:find("no test file found"))
       assert.are.equal(vim.log.levels.WARN, msgs[1].level)
 
       restore_fr()

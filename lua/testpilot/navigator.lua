@@ -16,9 +16,12 @@ function M.open(candidates, opts)
   local cfg = config.get()
   local open_method = (opts and opts.open_method) or cfg.open_method
   local search_pattern = opts and opts.search_pattern
+  local search_name = opts and opts.search_name
+  local found_test_file = false
 
   for _, path in ipairs(candidates) do
     if vim.fn.filereadable(path) == 1 then
+      found_test_file = true
       if search_pattern and not file_contains_pattern(path, search_pattern) then
         -- File exists but doesn't contain the test function; skip it
       else
@@ -51,12 +54,17 @@ function M.open(candidates, opts)
 
   if cfg.notify then
     if search_pattern then
-      vim.notify("testpilot: test function not found", vim.log.levels.WARN)
+      local name = search_name or "test function"
+      if found_test_file then
+        vim.notify("testpilot: " .. name .. " not found in test file", vim.log.levels.WARN)
+      else
+        vim.notify("testpilot: no test file found for " .. name, vim.log.levels.WARN)
+      end
     else
       vim.notify("testpilot: no test file found", vim.log.levels.WARN)
     end
   end
-  return false, search_pattern and "test function not found" or "no test file found"
+  return false, "no test file found"
 end
 
 return M
