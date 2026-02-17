@@ -10,15 +10,13 @@
 
 ## Running Tests
 
-```bash
-nvim --headless -c "PlenaryBustedDirectory tests/ {minimal_init='tests/minimal_init.lua'}" -c "q"
-```
-
-Run a single spec:
+All tests (requires `PlenaryBustedDirectory` with `minimal_init` for helper resolution):
 
 ```bash
-nvim --headless -c "PlenaryBustedFile tests/testpilot/config_spec.lua {minimal_init='tests/minimal_init.lua'}" -c "q"
+nvim --headless -u tests/minimal_init.lua -c "PlenaryBustedDirectory tests/testpilot {minimal_init='tests/minimal_init.lua'}" -c "qa"
 ```
+
+Note: `PlenaryBustedFile` does NOT pass `minimal_init` to child processes, so tests using `helpers.simulation` will fail. Always use `PlenaryBustedDirectory` with the `minimal_init` option.
 
 ## Adding a New Language
 
