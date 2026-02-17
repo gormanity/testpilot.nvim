@@ -39,10 +39,10 @@ require("testpilot").setup({
 local testpilot = require("testpilot")
 
 -- Open the test file for the current buffer (uses configured open_method)
-testpilot.open_test()  -- returns boolean
+testpilot.open_test_file()  -- returns boolean
 
 -- Override open_method per call
-testpilot.open_test({ open_method = "split" })
+testpilot.open_test_file({ open_method = "split" })
 
 -- Open the test file AND jump to the test function for the function at cursor
 -- Requires Treesitter parser for the current language
@@ -55,16 +55,16 @@ testpilot.nvim does not register any keybindings. Add your own:
 
 ```lua
 vim.keymap.set("n", "<leader>tt",
-  require("testpilot").open_test,
+  require("testpilot").open_test_file,
   { desc = "Open test file" })
 
 -- Or with a specific open method per binding:
 vim.keymap.set("n", "<leader>tv", function()
-  require("testpilot").open_test({ open_method = "vsplit" })
+  require("testpilot").open_test_file({ open_method = "vsplit" })
 end, { desc = "Open test in vsplit" })
 
 vim.keymap.set("n", "<leader>ts", function()
-  require("testpilot").open_test({ open_method = "split" })
+  require("testpilot").open_test_file({ open_method = "split" })
 end, { desc = "Open test in split" })
 
 vim.keymap.set("n", "<leader>tf",

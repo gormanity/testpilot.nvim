@@ -11,7 +11,7 @@ designed for extensibility to other languages.
 
 ```
 lua/testpilot/
-  init.lua           - setup(), open_test(), open_test_function() API
+  init.lua           - setup(), open_test_file(), open_test_function() API
   config.lua         - Default options, apply/reset
   resolver.lua       - Dispatches to language modules by extension
   navigator.lua      - Opens first readable candidate test file
@@ -29,11 +29,11 @@ lua/testpilot/
 ```lua
 local testpilot = require("testpilot")
 testpilot.setup({ open_method = "vsplit", notify = true })
-testpilot.open_test()           -- returns boolean
+testpilot.open_test_file()           -- returns boolean
 testpilot.open_test_function()  -- returns boolean (requires Treesitter)
 
 -- User adds their own keybindings:
-vim.keymap.set("n", "<leader>tt", testpilot.open_test, { desc = "Open test file" })
+vim.keymap.set("n", "<leader>tt", testpilot.open_test_file, { desc = "Open test file" })
 vim.keymap.set("n", "<leader>tf", testpilot.open_test_function, { desc = "Jump to test function" })
 ```
 

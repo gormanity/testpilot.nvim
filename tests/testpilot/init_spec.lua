@@ -20,7 +20,7 @@ describe("testpilot", function()
     end)
   end)
 
-  describe("open_test", function()
+  describe("open_test_file", function()
     it("returns false when no file in buffer", function()
       local original_expand = vim.fn.expand
       vim.fn.expand = function()
@@ -28,7 +28,7 @@ describe("testpilot", function()
       end
       local msgs, restore_notify = sim.mock_notify()
 
-      local result = testpilot.open_test()
+      local result = testpilot.open_test_file()
 
       assert.is_false(result)
       assert.are.equal(1, #msgs)
@@ -45,7 +45,7 @@ describe("testpilot", function()
       end
       local msgs, restore_notify = sim.mock_notify()
 
-      local result = testpilot.open_test()
+      local result = testpilot.open_test_file()
 
       assert.is_false(result)
       assert.are.equal(1, #msgs)
@@ -64,7 +64,7 @@ describe("testpilot", function()
       local cmds, restore_cmd = sim.mock_vim_cmd()
       local _, restore_notify = sim.mock_notify()
 
-      local result = testpilot.open_test()
+      local result = testpilot.open_test_file()
 
       assert.is_true(result)
       assert.are.equal(1, #cmds)
@@ -85,7 +85,7 @@ describe("testpilot", function()
       local cmds, restore_cmd = sim.mock_vim_cmd()
       local _, restore_notify = sim.mock_notify()
 
-      local result = testpilot.open_test({ open_method = "tabedit" })
+      local result = testpilot.open_test_file({ open_method = "tabedit" })
 
       assert.is_true(result)
       assert.is_truthy(cmds[1]:find("^tabedit "))
@@ -105,7 +105,7 @@ describe("testpilot", function()
       local cmds, restore_cmd = sim.mock_vim_cmd()
       local _, restore_notify = sim.mock_notify()
 
-      local result = testpilot.open_test()
+      local result = testpilot.open_test_file()
 
       assert.is_false(result)
       assert.are.equal(0, #cmds)

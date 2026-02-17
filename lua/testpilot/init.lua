@@ -9,7 +9,7 @@ function M.setup(opts)
   config.apply(opts)
 end
 
-function M.open_test(opts)
+function M.open_test_file(opts)
   local filepath = vim.fn.expand("%:p")
   if filepath == "" then
     if config.get().notify then
