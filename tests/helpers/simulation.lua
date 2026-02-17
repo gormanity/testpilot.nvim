@@ -24,6 +24,43 @@ function M.mock_filereadable(readable_files)
   end
 end
 
+function M.mock_bufnr(buf_map)
+  local original = vim.fn.bufnr
+  vim.fn.bufnr = function(path)
+    if buf_map[path] then
+      return buf_map[path]
+    end
+    return -1
+  end
+  return function()
+    vim.fn.bufnr = original
+  end
+end
+
+function M.mock_win_findbuf(win_map)
+  local original = vim.fn.win_findbuf
+  vim.fn.win_findbuf = function(bufnr)
+    if win_map[bufnr] then
+      return win_map[bufnr]
+    end
+    return {}
+  end
+  return function()
+    vim.fn.win_findbuf = original
+  end
+end
+
+function M.mock_set_current_win()
+  local calls = {}
+  local original = vim.api.nvim_set_current_win
+  vim.api.nvim_set_current_win = function(winid)
+    table.insert(calls, winid)
+  end
+  return calls, function()
+    vim.api.nvim_set_current_win = original
+  end
+end
+
 function M.mock_notify()
   local messages = {}
   local original = vim.notify
