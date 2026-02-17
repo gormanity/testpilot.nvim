@@ -61,6 +61,29 @@ function M.mock_set_current_win()
   end
 end
 
+function M.mock_readfile(file_lines)
+  local original = vim.fn.readfile
+  vim.fn.readfile = function(path)
+    return file_lines[path] or {}
+  end
+  return function()
+    vim.fn.readfile = original
+  end
+end
+
+function M.mock_match(results)
+  local original = vim.fn.match
+  vim.fn.match = function(str, pattern)
+    if results then
+      return results(str, pattern)
+    end
+    return original(str, pattern)
+  end
+  return function()
+    vim.fn.match = original
+  end
+end
+
 function M.mock_notify()
   local messages = {}
   local original = vim.notify

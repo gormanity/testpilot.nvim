@@ -164,6 +164,122 @@ describe("testpilot.navigator", function()
       restore_notify()
     end)
 
+    it("opens file and jumps when search_pattern matches", function()
+      local restore_fr = sim.mock_filereadable({ ["/pkg/handler_test.go"] = true })
+      local restore_rf = sim.mock_readfile({
+        ["/pkg/handler_test.go"] = { "package pkg", "", "func TestHandleRequest_OK(t *testing.T) {" },
+      })
+      local cmds, restore_cmd = sim.mock_vim_cmd()
+      local _, restore_notify = sim.mock_notify()
+      local search_calls = {}
+      local original_search = vim.fn.search
+      vim.fn.search = function(pattern)
+        table.insert(search_calls, pattern)
+        return 3
+      end
+
+      local ok, path = navigator.open(
+        { "/pkg/handler_test.go" },
+        { search_pattern = "^func TestHandleRequest[(_]" }
+      )
+
+      assert.is_true(ok)
+      assert.are.equal("/pkg/handler_test.go", path)
+      assert.are.equal(1, #cmds)
+      assert.are.equal(1, #search_calls)
+      assert.are.equal("^func TestHandleRequest[(_]", search_calls[1])
+
+      vim.fn.search = original_search
+      restore_fr()
+      restore_rf()
+      restore_cmd()
+      restore_notify()
+    end)
+
+    it("does not call search when no search_pattern provided", function()
+      local restore_fr = sim.mock_filereadable({ ["/pkg/handler_test.go"] = true })
+      local cmds, restore_cmd = sim.mock_vim_cmd()
+      local _, restore_notify = sim.mock_notify()
+      local search_calls = {}
+      local original_search = vim.fn.search
+      vim.fn.search = function(pattern)
+        table.insert(search_calls, pattern)
+        return 1
+      end
+
+      navigator.open({ "/pkg/handler_test.go" })
+
+      assert.are.equal(0, #search_calls)
+
+      vim.fn.search = original_search
+      restore_fr()
+      restore_cmd()
+      restore_notify()
+    end)
+
+    it("jumps when focusing existing window with search_pattern", function()
+      local restore_fr = sim.mock_filereadable({ ["/pkg/handler_test.go"] = true })
+      local restore_rf = sim.mock_readfile({
+        ["/pkg/handler_test.go"] = { "package pkg", "", "func TestFoo(t *testing.T) {" },
+      })
+      local restore_bufnr = sim.mock_bufnr({ ["/pkg/handler_test.go"] = 42 })
+      local restore_wfb = sim.mock_win_findbuf({ [42] = { 1001 } })
+      local win_calls, restore_scw = sim.mock_set_current_win()
+      local cmds, restore_cmd = sim.mock_vim_cmd()
+      local _, restore_notify = sim.mock_notify()
+      local search_calls = {}
+      local original_search = vim.fn.search
+      vim.fn.search = function(pattern)
+        table.insert(search_calls, pattern)
+        return 3
+      end
+
+      local ok, path = navigator.open(
+        { "/pkg/handler_test.go" },
+        { search_pattern = "^func TestFoo[(_]" }
+      )
+
+      assert.is_true(ok)
+      assert.are.equal(1, #win_calls)
+      assert.are.equal(1, #search_calls)
+      assert.are.equal("^func TestFoo[(_]", search_calls[1])
+
+      vim.fn.search = original_search
+      restore_fr()
+      restore_rf()
+      restore_bufnr()
+      restore_wfb()
+      restore_scw()
+      restore_cmd()
+      restore_notify()
+    end)
+
+    it("does not open file when search_pattern does not match", function()
+      local restore_fr = sim.mock_filereadable({ ["/pkg/handler_test.go"] = true })
+      local restore_rf = sim.mock_readfile({
+        ["/pkg/handler_test.go"] = { "package pkg", "", "func TestOtherThing(t *testing.T) {" },
+      })
+      local cmds, restore_cmd = sim.mock_vim_cmd()
+      local msgs, restore_notify = sim.mock_notify()
+
+      local ok, msg = navigator.open(
+        { "/pkg/handler_test.go" },
+        { search_pattern = "^func TestNonexistent[(_]" }
+      )
+
+      assert.is_false(ok)
+      assert.is_truthy(msg:find("test function not found"))
+      assert.are.equal(0, #cmds)
+      assert.are.equal(1, #msgs)
+      assert.is_truthy(msgs[1].msg:find("test function not found"))
+      assert.are.equal(vim.log.levels.WARN, msgs[1].level)
+
+      restore_fr()
+      restore_rf()
+      restore_cmd()
+      restore_notify()
+    end)
+
     it("suppresses notifications when notify is false", function()
       config.apply({ notify = false })
       local restore_fr = sim.mock_filereadable({ ["/pkg/handler_test.go"] = true })
