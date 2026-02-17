@@ -8,7 +8,7 @@ function M.setup(opts)
   config.apply(opts)
 end
 
-function M.open_test()
+function M.open_test(opts)
   local filepath = vim.fn.expand("%:p")
   if filepath == "" then
     if config.get().notify then
@@ -25,7 +25,7 @@ function M.open_test()
     return false
   end
 
-  local ok, _ = navigator.open(candidates)
+  local ok, _ = navigator.open(candidates, opts)
   return ok
 end
 

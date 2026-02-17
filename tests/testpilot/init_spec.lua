@@ -76,6 +76,26 @@ describe("testpilot", function()
       restore_notify()
     end)
 
+    it("passes opts.open_method through to navigator", function()
+      local original_expand = vim.fn.expand
+      vim.fn.expand = function()
+        return "/project/handler.go"
+      end
+      local restore_fr = sim.mock_filereadable({ ["/project/handler_test.go"] = true })
+      local cmds, restore_cmd = sim.mock_vim_cmd()
+      local _, restore_notify = sim.mock_notify()
+
+      local result = testpilot.open_test({ open_method = "tabedit" })
+
+      assert.is_true(result)
+      assert.is_truthy(cmds[1]:find("^tabedit "))
+
+      vim.fn.expand = original_expand
+      restore_fr()
+      restore_cmd()
+      restore_notify()
+    end)
+
     it("returns false when test file does not exist", function()
       local original_expand = vim.fn.expand
       vim.fn.expand = function()
