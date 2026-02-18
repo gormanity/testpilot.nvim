@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/icon.svg" width="200" alt="testpilot.nvim icon"/>
+</p>
+
 # testpilot.nvim
 
 Navigate from source code to test code in Neovim. Jump to the test file for your
