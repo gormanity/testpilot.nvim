@@ -2,9 +2,13 @@
   <img src="assets/icon.svg" width="200" alt="testpilot.nvim icon"/>
 </p>
 
-# testpilot.nvim
+<p align="center">
+  <a href="https://github.com/gormanity/testpilot.nvim/actions/workflows/ci.yml">
+    <img src="https://github.com/gormanity/testpilot.nvim/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"/>
+  </a>
+</p>
 
-[![CI](https://github.com/gormanity/testpilot.nvim/actions/workflows/ci.yml/badge.svg)](https://github.com/gormanity/testpilot.nvim/actions/workflows/ci.yml)
+# testpilot.nvim
 
 Navigate from source code to test code in Neovim. Jump to the test file for your
 current buffer, or jump directly to the test function for the function under
