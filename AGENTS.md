@@ -37,6 +37,13 @@ fail for tests that use helpers.
 - Use `jj new` to start the next change
 - Use `jj log` to review history
 
+## Releases and Tags
+
+- Use GitHub Releases for published versions
+- Prefer tags in the form `vX.Y.Z` (e.g., `v0.1.0`)
+- Draft release notes with Release Drafter and publish via GitHub when ready
+- Cut a release after user-facing changes, or when a set of related fixes/features is ready to ship
+
 ## Project Structure
 
 ```
