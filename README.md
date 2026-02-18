@@ -4,6 +4,8 @@
 
 # testpilot.nvim
 
+[![CI](https://github.com/gormanity/testpilot.nvim/actions/workflows/ci.yml/badge.svg)](https://github.com/gormanity/testpilot.nvim/actions/workflows/ci.yml)
+
 Navigate from source code to test code in Neovim. Jump to the test file for your
 current buffer, or jump directly to the test function for the function under
 your cursor.
@@ -111,3 +113,14 @@ make test
 ```
 
 Requires [plenary.nvim](https://github.com/nvim-lua/plenary.nvim).
+
+## Documentation
+
+After installing the plugin, generate help tags if your manager does not do it
+automatically:
+
+```vim
+:helptags ALL
+```
+
+Then see `:help testpilot`.

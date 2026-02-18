@@ -1,0 +1,73 @@
+*testpilot.txt*   Test file navigation for Neovim
+
+==============================================================================
+INTRODUCTION                                             *testpilot* *testpilot.nvim*
+
+Testpilot provides simple commands for jumping between source files and their
+corresponding tests.
+
+==============================================================================
+SETUP                                                            *testpilot-setup*
+
+Install with your preferred package manager, then call setup():
+
+>lua
+  require("testpilot").setup({
+    open_method = "vsplit",
+    notify = "failures",
+  })
+<
+
+Testpilot does not register any keymaps by default. Bind functions directly:
+
+>lua
+  vim.keymap.set("n", "<leader>tt", require("testpilot").open_test_file,
+    { desc = "Open test file" })
+
+  vim.keymap.set("n", "<leader>tf", require("testpilot").open_test_function,
+    { desc = "Jump to test function" })
+<
+
+==============================================================================
+API                                                               *testpilot-api*
+
+open_test_file({opts?})                                      *testpilot-open-test-file*
+    Open the test file for the current buffer.
+    Returns true on success, false on failure.
+
+open_test_function({opts?})                                *testpilot-open-test-function*
+    Open the test file and jump to the corresponding test function for the
+    function under the cursor. Requires Treesitter.
+    Returns true on success, false on failure.
+
+Options:
+  open_method  (string)  How to open the test file. One of:
+    "vsplit", "split", "edit", "tabedit"
+
+  notify       (string)  Notification behavior. One of:
+    "all", "failures", "none"
+
+==============================================================================
+LANGUAGES                                                       *testpilot-languages*
+
+Each language provides test file candidates. Some also support function-level
+navigation:
+
+- Go:            TestFoo from Foo
+- Python:        test_foo or foo_test
+- TypeScript/JS: *.test.* or *.spec.*
+- Rust:          *_test.rs or tests/*.rs
+- Lua:           *_spec.lua
+
+==============================================================================
+TROUBLESHOOTING                                              *testpilot-troubleshooting*
+
+- Ensure a Treesitter parser is installed for function navigation.
+- If no test file is found, check the configured language mapping and that the
+  candidate test file exists on disk.
+
+==============================================================================
+LICENSE                                                        *testpilot-license*
+
+MIT
+
